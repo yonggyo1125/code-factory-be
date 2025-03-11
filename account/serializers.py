@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from .models import UserProfile
 
 class SessionTokenObtainSerializer(TokenObtainPairSerializer):
@@ -19,7 +20,20 @@ class SessionTokenObtainSerializer(TokenObtainPairSerializer):
 
         return token
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = '__all__'
+class UserProfileSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        """
+        회원 가입 처리 
+        """
+        print(f"validated_data={validated_data}")
+        validated_data['user_id']=1
+        return UserProfile.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        회원정보 수정 처리 
+        """
+
+        pass
+
+    

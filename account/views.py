@@ -3,7 +3,7 @@ from rest_framework.decorators import permission_classes, action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import UserProfile
 from .serializers import UserProfileSerializer
@@ -13,21 +13,18 @@ class SessionTokenObtainPairView(TokenObtainPairView):
     serializer_class = SessionTokenObtainSerializer
 
 
-class UserProfileViewSet(APIView):
-
-    def post(self, request):
+class UserProfileViewSet(viewsets.ViewSet):
+    def create(self, request):
         serializer = UserProfileSerializer(data=request.data)
-        print(request)
-        print(request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
-        
-        return Response(serializer.errors, status=400)
-        
-    @permission_classes((IsAuthenticated,))
-    def patch(self, request, pk=None):
+
         pass
+
+
+    def update(self, request, pk=None):
+        pass
+    
 
 
 """
