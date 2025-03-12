@@ -1,7 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import User
 
 class SessionTokenObtainSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -11,29 +10,20 @@ class SessionTokenObtainSerializer(TokenObtainPairSerializer):
         token['id'] = user.id
         token['username'] = user.username
         token['email'] = user.email
-        
-        profile = UserProfile.objects.filter(user=user)
-        if profile: 
-            token['mobile'] = profile[0].mobile
-            token['gid'] = profile[0].gid
-        
+        token['mobile'] = user.mobile
+        token['gid'] = user.gid
 
         return token
 
-class UserProfileSerializer(serializers.Serializer):
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField(min_length=6, max_length=45, allow_blank=False, trim_whitespace=True)
+    password = serializers.CharField(max_length=65, allow_blank=False, trim_whitespace=True)
+    email = serializers.EmailField(allow_blank=False)
+    mobile = serializers.CharField(max_length=15, allow_blank=True, trim_whitespace=True)
+
     def create(self, validated_data):
-        """
-        회원 가입 처리 
-        """
-        print(f"validated_data={validated_data}")
-        validated_data['user_id']=1
-        return UserProfile.objects.create(**validated_data)
+        print(validated_data)
+        return User.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        """
-        회원정보 수정 처리 
-        """
-
-        pass
-
-    
+        return instance

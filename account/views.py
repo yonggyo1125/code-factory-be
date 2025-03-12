@@ -5,9 +5,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import UserProfile
-from .serializers import UserProfileSerializer
-
+from .serializers import UserSerializer
 
 class SessionTokenObtainPairView(TokenObtainPairView):
     serializer_class = SessionTokenObtainSerializer
@@ -15,11 +13,13 @@ class SessionTokenObtainPairView(TokenObtainPairView):
 
 class UserProfileViewSet(viewsets.ViewSet):
     def create(self, request):
-        serializer = UserProfileSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            
+            return Response(status=201)
 
-        pass
+        return Response(serializer.errors, status=400)
 
 
     def update(self, request, pk=None):
